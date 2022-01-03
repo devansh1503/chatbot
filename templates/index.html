@@ -1,0 +1,117 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+            background-color: rgb(56, 45, 45);
+            
+        }
+        .area{
+            background-image: linear-gradient(to right, blue, rgb(255, 0, 76));
+            height: 400px;
+            width: 700px;
+            overflow-y: auto;
+            border: none;
+            border-radius: 10px;
+        }
+        #msg{
+            margin: 20px;
+            width: 600px;
+            height: 60px;
+            background-color: rgb(233, 190, 190);
+            border: none;
+            border-radius: 15px;
+            padding: 7px;
+            font-size: 20px;
+            color: rgb(51, 45, 45);
+        }
+        #btn{
+            height: 50px;
+            width: 100px;
+            border-radius: 15px;
+            cursor: pointer;
+            border: none;
+            background-color: blueviolet;
+            font-size: large;
+            font-weight: 200;
+            color: white;
+        }
+        .message{
+            background-color: purple;
+            color: white;
+            font-size: medium;
+            border-radius: 15px;
+            padding: 15px;
+            width: fit-content;
+            margin: 10px;
+        }
+        .right{
+            float: right;
+            clear: both;
+        }
+        .left{
+            float: left;
+            clear: both;
+        }
+    </style>
+</head>
+<body>
+    <div class="main">
+        <h1 style="color: wheat;">CHAT WITH ME!</h1>
+        <div class="area">
+
+        </div>
+        <form action="" id="sendmsg">
+            <input type="text" name="msg" id="msg">
+            <input type="button" value="Send" onclick="sendmsg()" id="btn">
+        </form>
+    </div>
+    <script>
+        const chatarea = document.getElementsByClassName('area')[0];
+        const form = document.getElementById('sendmsg');
+        const mess = document.getElementById('msg');
+        const butn = document.getElementById('btn');
+        function append(textmsg,pos){
+            const newmsg = document.createElement('div');
+            newmsg.innerText = textmsg;
+            newmsg.classList.add('message');
+            newmsg.classList.add(pos);
+            chatarea.append(newmsg);
+        }
+        messarr = [];
+        function sendmsg(){
+            textmsg = mess.value;
+            messarr.push(textmsg)
+            append(textmsg,'right')
+
+            fetch('http://192.168.43.93:5000/pred',{
+                method: "POST",
+                body: JSON.stringify({message:textmsg}),
+                mode:"cors",
+                headers:{
+                    'Content-Type':'application/json'
+                },
+            })
+            .then(r=>r.json())
+            .then(r=>{
+                let msg2 = r.answer;
+                messarr.push(msg2);
+                console.log(r.answer)
+                append(msg2,'left')
+            })
+        }
+    </script>
+</body>
+</html>
